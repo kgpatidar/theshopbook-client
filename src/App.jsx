@@ -1,38 +1,51 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import Login from "./Pages/Auth/Login";
+import AuthComponent from "./Pages/Auth/AuthPage";
 import Main from "./Main";
+import { useUser } from "./Hooks/Auth";
+import NotificationPermission from "./Components/Util/NotificationPermission";
+import { isWholesaler } from "./Helpers/account";
 
 const App = () => {
-  const isLoggedIn = false;
+  const { isLoggedIn, data } = useUser();
+
   return (
-    <div>
-      <Switch>
-        <Route
-          exact
-          path="/"
-          render={() => {
-            return isLoggedIn ? (
-              <Redirect to="/app" />
-            ) : (
-              <Redirect to="/login" />
-            );
-          }}
-        />
-        <Route
-          path="/login"
-          render={(props) => {
-            return isLoggedIn ? <Redirect to="/app" /> : <Login />;
-          }}
-        />
-        <Route
-          path="/app"
-          render={(props) => {
-            return isLoggedIn ? <Main /> : <Redirect to="/login" />;
-          }}
-        />
-      </Switch>
-    </div>
+    <Switch>
+      <Route
+        exact
+        path="/"
+        render={() => {
+          return isLoggedIn ? <Redirect to="/app" /> : <Redirect to="/login" />;
+        }}
+      />
+      <Route
+        path="/login"
+        render={(props) => {
+          return isLoggedIn ? <Redirect to="/app" /> : <AuthComponent />;
+        }}
+      />
+      <Route
+        path="/app"
+        render={(props) => {
+          return !isLoggedIn ? (
+            <Redirect to="/login" />
+          ) : Notification.permission !== "granted" ? (
+            <NotificationPermission />
+          ) : (
+            <>
+              <Main />
+              <Redirect
+                to={
+                  isWholesaler(data)
+                    ? "/app/wholesaler/home"
+                    : "/app/retailer/home"
+                }
+              />
+            </>
+          );
+        }}
+      />
+    </Switch>
   );
 };
 
