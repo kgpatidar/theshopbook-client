@@ -1,4 +1,4 @@
-let cacheData = "appV1";
+let cacheData = "theshopbook-app-version-v1";
 
 this.addEventListener("install", (event) => {
   event.waitUntil(
@@ -10,8 +10,12 @@ this.addEventListener("install", (event) => {
         "/manifest.json",
         "/ws",
         "/favicon.ico",
-        "/index.html",
-        "/logo192.png",
+        "/512.png",
+        "/192.png",
+        "/64.png",
+        "/32.png",
+        "https://fonts.gstatic.com/s/ubuntu/v19/4iCv6KVjbNBYlgoCjC3jsGyN.woff2",
+        "https://fonts.gstatic.com/s/ubuntu/v19/4iCs6KVjbNBYlgoKfw72.woff2",
       ]);
     })
   );
