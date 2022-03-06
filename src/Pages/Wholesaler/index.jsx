@@ -1,3 +1,4 @@
+import { map } from "lodash";
 import React from "react";
 import DesktopLayout from "../../Components/Layout/DesktopLayout";
 import PhoneLayout from "../../Components/Layout/PhoneLayout";
@@ -12,7 +13,13 @@ const WholesalerLayout = () => {
     <PhoneLayout />
   ) : (
     <DesktopLayout routes={routes}>
-      <div>Content</div>
+      <>
+        <div className="flex flex-col">
+          {map([2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3], (i) => (
+            <span>Content</span>
+          ))}
+        </div>
+      </>
     </DesktopLayout>
   );
 };

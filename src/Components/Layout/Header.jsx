@@ -34,7 +34,7 @@ const Header = () => {
   const email = get(data, "email", "abc123@gmail.com");
 
   return (
-    <div className="h-10 flex justify-between items-center py-8 pl-4 pr-8">
+    <nav className="h-10 flex justify-between items-center py-8 pl-4 pr-8">
       <Breadcumb />
       <div className="flex">
         <div className="flex flex-col text-app-text2 text-right">
@@ -46,7 +46,7 @@ const Header = () => {
           {name.charAt(0)}
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 
