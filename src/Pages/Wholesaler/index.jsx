@@ -1,24 +1,36 @@
-import { map } from "lodash";
 import React from "react";
 import DesktopLayout from "../../Components/Layout/DesktopLayout";
 import PhoneLayout from "../../Components/Layout/PhoneLayout";
 import { getWholesalerRoutes } from "../../Helpers/routes";
 
-const checkIsPhone = () => window.innerWidth <= 720;
+const checkIsPhone = () => window.innerWidth <= 800;
 
 const WholesalerLayout = () => {
   const isPhone = checkIsPhone();
   const routes = getWholesalerRoutes(isPhone);
   return isPhone ? (
-    <PhoneLayout />
+    <PhoneLayout routes={routes}>
+      <>
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>{" "}
+        <div>Phone Layout</div> <div>Phone Layout</div> <div>Phone Layout</div>
+      </>
+    </PhoneLayout>
   ) : (
     <DesktopLayout routes={routes}>
       <>
-        <div className="flex flex-col">
-          {map([2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3], (i) => (
-            <span>Content</span>
-          ))}
-        </div>
+        <div>Desktop Layout</div>
       </>
     </DesktopLayout>
   );

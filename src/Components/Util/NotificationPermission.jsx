@@ -19,12 +19,12 @@ const NotificationPermission = () => {
     >
       <Brand className="w-16 h-16 text-justify-center" name={false} />
       <br />
-      <span className="text-app-black1">
+      <span className="text-app-black1 text-center px-8">
         We are trying to provide you realtime update with our push notification
         service. So please click to enable.
       </span>
       <br />
-      <button className="rounded-lg font-medium text-xl bg-gradient-to-r from-blue-700 to-blue-500 hover:opacity-90 text-white py-2 px-4 hover:bg0">
+      <button className="rounded-lg font-medium text-base md:text-xl bg-gradient-to-r from-blue-700 to-blue-500 hover:opacity-90 text-white py-2 px-4 hover:bg0">
         Give Notification Permission
       </button>
     </div>

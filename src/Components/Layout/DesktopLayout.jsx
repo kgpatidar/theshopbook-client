@@ -2,7 +2,7 @@ import React from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 
-const DesktopLayout = ({ routes, header, children }) => {
+const DesktopLayout = ({ routes, children }) => {
   return (
     <div className="w-screen h-screen flex bg-white">
       <Sidebar routes={routes} />
