@@ -9,7 +9,7 @@ const Sidebar = ({ routes }) => {
   const { pathname } = useLocation();
   const checkIsActive = (path) => pathname.includes(path);
   return (
-    <div className="h-full w-16 flex flex-col justify-between items-center border-r">
+    <div className="h-0 md:h-full w-0 invisible md:visible md:w-16 flex flex-col justify-between items-center border-r">
       <div className="py-4">
         <Brand className="w-8 h-8" name={false} />
       </div>
@@ -42,7 +42,7 @@ const Sidebar = ({ routes }) => {
           })
         )}
       </div>
-      <div className="py-4">
+      <div className="py-4 w-full">
         <LogoutModal />
       </div>
     </div>

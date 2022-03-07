@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import BrandLogo from "../Assets/512.png";
 
 const Brand = ({
@@ -9,7 +10,13 @@ const Brand = ({
 }) => {
   return (
     <div className={`${className} ${isVerticle ? "" : "flex items-center"}`}>
-      <img src={BrandLogo} alt="" className="w-full h-full" />
+      <Link to="/" className="bg-blue-500 cursor-pointer">
+        <img
+          src={BrandLogo}
+          alt=""
+          className="w-full h-full hover:animate-pulse"
+        />
+      </Link>
       <div>
         {name && (
           <p

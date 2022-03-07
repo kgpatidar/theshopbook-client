@@ -15,7 +15,12 @@ const LogoutModal = () => {
     <Modal
       heading="Logout"
       trigger={
-        <LogoutIcon className="cursor-pointer text-app-red w-6 h-6 hover:text-red-700" />
+        <div className="cursor-pointer flex flex-col items-center justify-center hover:bg-red-100 w-full py-2">
+          <LogoutIcon className="text-app-red w-6 h-6 hover:text-red-700" />
+          <small className="text-app-red" style={{ fontSize: "9px" }}>
+            Logout
+          </small>
+        </div>
       }
     >
       <div className="flex flex-col items-center">
