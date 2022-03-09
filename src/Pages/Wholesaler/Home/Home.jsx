@@ -1,27 +1,28 @@
 import { get } from "lodash";
 import React from "react";
+import LineChart from "../../../Components/Charts/LineChart";
 import { useUser } from "../../../Hooks/Auth";
 
 const Home = () => {
   const { data } = useUser();
   const name = get(data, "name", "Unknown");
   return (
-    <div className="p-4">
+    <div className="p-4 h-full">
       <div>
         <h1 className="text-xl">
           Hi, <strong>{name}</strong>
         </h1>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-5">
-        <div className="flex items-center justify-center rounded-xl border-2 border-green-300 h-36 w-full mr-8 bg-green-100">
-          <div className="flex flex-col items-center text-center text-green-900">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-5">
+        <div className="flex items-center justify-center rounded-xl border-2 border-lime-300 h-36 w-full mr-8 bg-lime-100">
+          <div className="flex flex-col items-center text-center text-lime-900">
             <span className="text-5xl font-bold">25</span>
             <span className="font-medium">Retailers</span>
           </div>
         </div>
-        <div className="flex items-center justify-center rounded-xl border-2 border-sky-300 h-36 w-full mr-8 bg-sky-100">
-          <div className="flex flex-col text-center text-sky-900">
+        <div className="flex items-center justify-center rounded-xl border-2 border-fuchsia-300 h-36 w-full mr-8 bg-fuchsia-100">
+          <div className="flex flex-col text-center text-fuchsia-900">
             <span className="text-5xl font-bold">221</span>
             <span className="font-medium">Stocks</span>
           </div>
@@ -38,6 +39,10 @@ const Home = () => {
             <span className="font-medium">Notification</span>
           </div>
         </div>
+      </div>
+
+      <div className="p-2 md:p-8 border rounded-lg  h-1/2 lg:h-2/3">
+        <LineChart />
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/solid";
 
 /** @WHOLESALER_PHONE_ROUTES */
-export const getWholesalerPhoneRoutes = () => {
+const getWholesalerPhoneRoutes = () => {
   return [
     {
       name: "Home",
@@ -39,7 +39,7 @@ export const getWholesalerPhoneRoutes = () => {
 };
 
 /** @WHOLESALER_DESKTOP_ROUTES */
-export const getWholesalerDesktopRoutes = () => {
+const getWholesalerDesktopRoutes = () => {
   return [
     {
       name: "Home",
@@ -67,4 +67,8 @@ export const getWholesalerDesktopRoutes = () => {
       path: "profile",
     },
   ];
+};
+
+export const getWholesalerRoutes = (isPhone) => {
+  return isPhone ? getWholesalerPhoneRoutes() : getWholesalerDesktopRoutes();
 };

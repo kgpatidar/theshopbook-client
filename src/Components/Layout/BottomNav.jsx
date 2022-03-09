@@ -6,7 +6,10 @@ const BottomNav = ({ routes }) => {
   const { pathname } = useLocation();
   const checkIsActive = (path) => pathname.includes(path);
   return (
-    <nav className="w-full h-16 bg-gray-50 items-center flex justify-around fixed bottom-0">
+    <nav
+      style={{ height: "50px" }}
+      className="w-full bg-gray-50 items-center flex justify-around fixed bottom-0"
+    >
       {React.Children.toArray(
         map(routes, ({ path, Icon, name }) => {
           const isActive = checkIsActive(path);

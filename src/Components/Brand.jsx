@@ -10,13 +10,7 @@ const Brand = ({
 }) => {
   return (
     <div className={`${className} ${isVerticle ? "" : "flex items-center"}`}>
-      <Link to="/" className="bg-blue-500 cursor-pointer">
-        <img
-          src={BrandLogo}
-          alt=""
-          className="w-full h-full hover:animate-pulse"
-        />
-      </Link>
+      <img src={BrandLogo} alt="" className="w-full h-full" />
       <div>
         {name && (
           <p

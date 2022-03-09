@@ -46,7 +46,7 @@ const RegisterForm = () => {
         />
         <Input
           type="email"
-          label="Username"
+          label="Email"
           name="email"
           value={data.email}
           onChange={handleChange}
