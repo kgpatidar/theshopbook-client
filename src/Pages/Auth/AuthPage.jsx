@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import Icons from "../../Assets/Icons";
 import { Brand } from "../../Components/Brand";
 import Input from "../../Components/Form/Input";
-import { useAuth } from "../../Hooks/Auth";
+import { useAuth, useUser } from "../../Hooks/Auth";
 
 const RegisterForm = () => {
   const { registerUser } = useAuth();
@@ -137,9 +138,14 @@ const LoginForm = () => {
 };
 
 const AuthComponent = () => {
+  const { isLoggedIn } = useUser();
   const [type, setType] = useState("LOGIN");
 
   const toggleType = () => setType(type === "LOGIN" ? "REGISTER" : "LOGIN");
+
+  if (isLoggedIn) {
+    return <Redirect to="/app" />;
+  }
 
   return (
     <div className="w-screen h-screen flex bg-app-white">

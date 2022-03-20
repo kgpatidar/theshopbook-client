@@ -26,7 +26,7 @@ const Stocks = () => {
                 key={item.id}
                 className="bg-gray-50 border border-gray-200 flex items-center relative"
               >
-                <TrashIcon className="w-6 h-6 absolute right-2 top-2 text-red-700 bg-gray-50 p-1 rounded-full cursor-pointer hover:bg-gray-200" />
+                <TrashIcon className="w-6 h-6 absolute right-2 top-2 text-red-500 bg-gray-50 p-1 rounded-full cursor-pointer hover:bg-gray-200" />
                 <PencilIcon className="w-6 h-6 absolute right-8 top-2 text-blue-700 bg-gray-50 p-1 rounded-full cursor-pointer hover:bg-gray-200" />
                 <div className="text-2xl h-full w-2/12 flex items-center justify-center font-thin text-app-text1">
                   #{index + 1}

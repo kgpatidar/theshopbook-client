@@ -3,9 +3,9 @@ import ReactDOM from "react-dom";
 import { QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";
 import { queryClient } from "./Helpers/queryClient";
-
 import App from "./App";
 import "./index.css";
+import { registerServieWorker } from "./serviceWorker";
 
 ReactDOM.render(
   <BrowserRouter>
@@ -15,3 +15,5 @@ ReactDOM.render(
   </BrowserRouter>,
   document.getElementById("root")
 );
+
+registerServieWorker();

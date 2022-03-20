@@ -37,13 +37,13 @@ this.addEventListener("push", function (event) {
   const title = data.title || "TheShopbook";
   const options = {
     body: data.body || "Hey There!",
-    icon: "/logo192.png",
+    icon: "/64.png",
     vibrate: [100, 50, 10, 20, 20],
     tag: "sample",
     actions: [
       {
         action: "www.google.com",
-        title: "Check",
+        title: "Open",
       },
     ],
   };

@@ -19,7 +19,8 @@ const getRedirectingURL = (pathname, isWholesaler) => {
 
 const App = () => {
   const { pathname } = useLocation();
-  const { isLoggedIn, data, isLoading } = useUser();
+  const { isLoggedIn, isLoading } = useUser();
+  console.log(pathname);
 
   if (isLoading) {
     return (
@@ -38,27 +39,8 @@ const App = () => {
           return isLoggedIn ? <Redirect to="/app" /> : <Redirect to="/login" />;
         }}
       />
-      <Route
-        path="/login"
-        render={(props) => {
-          return isLoggedIn ? <Redirect to="/app" /> : <AuthComponent />;
-        }}
-      />
-      <Route
-        path="/app"
-        render={(props) => {
-          return !isLoggedIn ? (
-            <Redirect to="/login" />
-          ) : Notification.permission !== "granted" ? (
-            <NotificationPermission />
-          ) : (
-            <>
-              <Main />
-              <Redirect to={getRedirectingURL(pathname, isWholesaler(data))} />
-            </>
-          );
-        }}
-      />
+      <Route path="/login" render={(props) => <AuthComponent />} />
+      <Route path="/app" render={(props) => <Main />} />
     </Switch>
   );
 };

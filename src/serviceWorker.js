@@ -33,7 +33,6 @@ function subscribeUser(subscribe, userInfo) {
 }
 
 export default async function registerServiceWorkerAndSubscribe(userInfo) {
-  await navigator.serviceWorker.register("http://localhost:3000/sw.js");
   navigator.serviceWorker.ready.then(function (response) {
     return response.pushManager.getSubscription().then((subscription) => {
       return response.pushManager
@@ -46,4 +45,16 @@ export default async function registerServiceWorkerAndSubscribe(userInfo) {
         });
     });
   });
+}
+
+export async function registerServieWorker() {
+  if (process.env.NODE_ENV === "development") {
+    return await navigator.serviceWorker.register(
+      `http://localhost:3000/sw.js`
+    );
+  } else {
+    return await navigator.serviceWorker.register(
+      "https://testing-app-1.netlify.app/sw.js"
+    );
+  }
 }
