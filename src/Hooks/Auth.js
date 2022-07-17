@@ -1,10 +1,12 @@
-import { isNull } from "lodash";
+import { get, isNull } from "lodash";
 import { useMutation, useQuery } from "react-query";
 import {
   getUserFromLS,
   loginUserApi,
   logoutUserApi,
   registerUserApi,
+  sendVerificationMailApi,
+  setUserInLS,
 } from "../Apis/Auth";
 import { refechQuery } from "../Helpers/queryClient";
 
@@ -12,14 +14,24 @@ export const useAuth = () => {
   const { mutate: registerUser, isLoading: isRegistering } = useMutation(
     registerUserApi
   );
+  const { mutate: verifyEmail, isLoading: isSendingMail } = useMutation(
+    sendVerificationMailApi
+  );
   const { mutate: loginUser, isLoading: isLogging } = useMutation(
     loginUserApi,
-    { onSuccess: () => refechQuery("fetchUserInfo") }
+    {
+      onSuccess: (data) => {
+        const userData = get(data, "data.data", {});
+        setUserInLS(userData).then(() => refechQuery("fetchUserInfo"));
+      },
+    }
   );
   const { mutate: logoutUser } = useMutation(logoutUserApi, {
     onSuccess: () => refechQuery("fetchUserInfo"),
   });
   return {
+    verifyEmail,
+    isSendingMail,
     registerUser,
     isRegistering,
     loginUser,
@@ -35,4 +47,10 @@ export const useUser = () => {
     data,
     isLoading,
   };
+};
+
+export const useWholesellerId = () => {
+  const { data } = useUser();
+  const wholesellerId = get(data, "wholesellerId", null);
+  return wholesellerId ? wholesellerId : get(data, "id", null);
 };

@@ -5,5 +5,5 @@ export const getAccountStatus = (userData) => {
 };
 
 export const isWholesaler = (userData) => {
-  return toUpper(get(userData, "meta.type", "WHOLESALER")) === "WHOLESALER";
+  return get(userData, "userType", null) === null;
 };

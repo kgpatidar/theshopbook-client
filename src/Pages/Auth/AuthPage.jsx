@@ -4,19 +4,18 @@ import Icons from "../../Assets/Icons";
 import { Brand } from "../../Components/Brand";
 import Input from "../../Components/Form/Input";
 import { useAuth, useUser } from "../../Hooks/Auth";
+import toast from "react-hot-toast";
 
-const RegisterForm = () => {
-  const { registerUser } = useAuth();
+const RegisterForm = ({ toggleType = () => {} }) => {
+  const { registerUser, isRegistering, verifyEmail, isSendingMail } = useAuth();
   const [data, setData] = useState({
     name: "",
     email: "",
     password: "",
     buisnessName: "",
     phoneNo: "",
-    meta: {
-      type: "WHOLESALER",
-      accountStatus: "ACTIVE",
-    },
+    address: "",
+    wholesellerId: null,
   });
 
   const handleChange = (e) => {
@@ -26,7 +25,27 @@ const RegisterForm = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    registerUser(data, { onSuccess: () => {} });
+    const toastId = toast.loading("Registering User.");
+    registerUser(data, {
+      onSuccess: () => {
+        toast.dismiss(toastId);
+        toast.success("User Registered.");
+        setData({
+          name: "",
+          email: "",
+          password: "",
+          buisnessName: "",
+          phoneNo: "",
+          address: "",
+          wholesellerId: null,
+        });
+        toggleType();
+      },
+      onError: (error) => {
+        toast.dismiss(toastId);
+        toast.error("Something went wrong.");
+      },
+    });
   };
 
   return (
@@ -99,7 +118,11 @@ const LoginForm = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    loginUser(data);
+    loginUser(data, {
+      onError: (error) => {
+        toast.error(error.response.data.msg);
+      },
+    });
   };
 
   return (
@@ -156,7 +179,11 @@ const AuthComponent = () => {
         <div>
           <Brand className="w-16 h-16" />
         </div>
-        {type === "LOGIN" ? <LoginForm /> : <RegisterForm />}
+        {type === "LOGIN" ? (
+          <LoginForm />
+        ) : (
+          <RegisterForm toggleType={toggleType} />
+        )}
         <div>
           <button
             onClick={toggleType}

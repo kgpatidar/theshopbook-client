@@ -10,11 +10,13 @@ import Home from "./Home/Home";
 import PhoneMore from "./More/PhoneMore";
 import Retailers from "./Retailers/Retailers";
 import Stocks from "./Stocks/Stocks";
+import Orders from "./Orders/Orders";
 
 const screenRoutes = [
   { path: "/app/wholesaler/home", main: Home },
   { path: "/app/wholesaler/retailers", main: Retailers },
   { path: "/app/wholesaler/stocks", main: Stocks },
+  { path: "/app/wholesaler/orders", main: Orders },
   { path: "/app/wholesaler/more", main: PhoneMore },
 ];
 

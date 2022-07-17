@@ -1,0 +1,401 @@
+import { LocationMarkerIcon } from "@heroicons/react/solid";
+import { get, keys, map, replace, values } from "lodash";
+import React from "react";
+import { useState } from "react";
+import { useMemo } from "react";
+import toast from "react-hot-toast";
+import Header from "../../../Components/Layout/Header";
+import ConfirmationTooltip from "../../../Components/Modal/ConfirmPop";
+import Modal from "../../../Components/Modal/Modal";
+import Spinner from "../../../Components/Spinner";
+import { toHumanize } from "../../../Helpers/global";
+import { refechQuery } from "../../../Helpers/queryClient";
+import { useOrders, useOrdersActions } from "../../../Hooks/Orders";
+import { useRetailers } from "../../../Hooks/Retailers";
+import { useStocks } from "../../../Hooks/Stocks";
+import {
+  getAvailableNewStatus,
+  getDateTime,
+  getMappedOrdersData,
+  ORDER_PAYMENT_STATUS,
+  ORDER_STATUS,
+  ORDER_UI_COLOR,
+  ORDER_UI_ICON,
+  PAYMENT_STATUS_COLOR,
+  PAYMENT_STATUS_UI_ICON,
+} from "./orders.helper";
+
+const OrderStatusView = ({ status, type }) => {
+  const OrderStatusIcon =
+    type === "ORDER_STATUS"
+      ? ORDER_UI_ICON[status]
+      : PAYMENT_STATUS_UI_ICON[status];
+  const color =
+    type === "ORDER_STATUS"
+      ? ORDER_UI_COLOR[status]
+      : PAYMENT_STATUS_COLOR[status];
+  const statusTextColor = `text-${color}-600`;
+  return (
+    <h3
+      className={`flex items-center leading-3 font-medium ${statusTextColor}`}
+    >
+      <OrderStatusIcon className={`w-4 h-4 ${statusTextColor}`} />
+      {status}
+    </h3>
+  );
+};
+
+const UpdateOrderStatus = ({ data, type, close }) => {
+  const {
+    approveOrderStatus,
+    cancelOrderStatus,
+    updateOrderStatus,
+    updatePaymentStatus,
+    isApproving,
+    isCanceling,
+    isUpdatingOS,
+    isUpdatingPS,
+  } = useOrdersActions();
+  const {
+    id,
+    payment,
+    price,
+    quantity,
+    retailer = {},
+    stock = {},
+    status,
+    time,
+  } = data;
+
+  const availableNewStatus = useMemo(
+    () =>
+      getAvailableNewStatus(type === "ORDER_STATUS" ? status : payment, type),
+    [status, type]
+  );
+
+  const changeStatus = (sts) => {
+    if (type === "ORDER_STATUS") {
+      if (sts === ORDER_STATUS.APPROVED) {
+        approveOrderStatus(
+          { orderId: id, status: sts },
+          {
+            onSuccess: (res) => {
+              refechQuery("fetchOrders");
+              refechQuery("fetchStocks");
+              toast.success(get(res, "data.msg", "Success!"));
+              close();
+            },
+            onError: (error) => {
+              toast.error(error.response.data.msg);
+            },
+          }
+        );
+      } else if (sts === ORDER_STATUS.CANCELED) {
+        cancelOrderStatus(id, {
+          onSuccess: (res) => {
+            refechQuery("fetchOrders");
+            toast.success(get(res, "data.msg", "Success!"));
+            close();
+          },
+          onError: (error) => {
+            toast.error(error.response.data.msg);
+          },
+        });
+      } else {
+        updateOrderStatus(
+          { orderId: id, status: sts },
+          {
+            onSuccess: (res) => {
+              refechQuery("fetchOrders");
+              toast.success(get(res, "data.msg", "Success!"));
+              close();
+            },
+            onError: (error) => {
+              toast.error(error.response.data.msg);
+            },
+          }
+        );
+      }
+    } else {
+      updatePaymentStatus(
+        { orderId: id, payment: sts },
+        {
+          onSuccess: (res) => {
+            refechQuery("fetchOrders");
+            toast.success(get(res, "data.msg", "Success!"));
+            close();
+          },
+          onError: (error) => {
+            toast.error(error.response.data.msg);
+          },
+        }
+      );
+    }
+  };
+
+  return (
+    <div className="relative">
+      {(isApproving || isCanceling || isUpdatingOS || isUpdatingPS) && (
+        <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-50">
+          <Spinner />
+        </div>
+      )}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <div className="text-left">
+            <small className="text-gray-500">ORDER FROM</small>
+            <h3 className="leading-3 font-medium">
+              {toHumanize(get(retailer, "name", ""))}
+            </h3>
+          </div>
+        </div>
+        &nbsp; &nbsp;
+        <div className="text-right">
+          <small className="text-gray-500">ORDER NAME</small>
+          <h3 className="leading-3 font-medium">{get(stock, "name", "")}</h3>
+        </div>
+      </div>
+      <div className="py-3 leading-3 flex items-center justify-center font-bold text-lg">
+        <h1>Order ID : #{id}</h1>
+      </div>
+
+      <div className="flex justify-between">
+        <div className="text-left">
+          <small className="text-gray-500">
+            CURRENT {replace(type, "_", " ")}
+          </small>
+          <OrderStatusView
+            type={type}
+            status={type === "ORDER_STATUS" ? status : payment}
+          />
+        </div>
+        &nbsp; &nbsp; &nbsp; &nbsp;
+        <div className="text-right">
+          <small className="text-gray-500">CHANGE STATUS TO</small>
+          {React.Children.toArray(
+            map(availableNewStatus, (sts) => {
+              return (
+                <ConfirmationTooltip
+                  position="bottom center"
+                  msg={`Do you want to change ${replace(
+                    type,
+                    "_",
+                    " "
+                  )} to ${sts}.`}
+                  onYes={() => changeStatus(sts)}
+                >
+                  <div className="p-1 cursor-pointer p-0.5 hover:bg-gray-100 scale-75">
+                    <OrderStatusView type={type} status={sts} />
+                  </div>
+                </ConfirmationTooltip>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const OrderCard = ({ data }) => {
+  const {
+    id,
+    payment,
+    price,
+    quantity,
+    retailer = {},
+    stock = {},
+    status,
+    time,
+  } = data;
+  const OrderStatusIcon = ORDER_UI_ICON[status];
+  const PaymentStatusIcon = PAYMENT_STATUS_UI_ICON[payment];
+  const color = ORDER_UI_COLOR[status];
+  const statusTextColor = `text-${color}-600`;
+  const paymentStatusTextColor = `text-${PAYMENT_STATUS_COLOR[payment]}-600`;
+
+  return (
+    <div className="p-4 border border-gray-100 rounded-lg bg-white shadow-lg hover:shadow-xl hover:bg-gray-50">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <div className="text-left">
+            <small className="text-gray-500">ORDER FROM</small>
+            <h3 className="leading-3 font-medium">
+              {toHumanize(get(retailer, "name", ""))}
+            </h3>
+            <small
+              className="leading-3 text-gray-600"
+              style={{ fontSize: "10px" }}
+            >
+              Phone: {get(retailer, "phoneNo", "")}
+            </small>
+          </div>
+        </div>
+        <div className="text-right">
+          <small className="text-gray-500">ORDER NAME</small>
+          <h3 className="leading-3 font-medium">{get(stock, "name", "")}</h3>
+          <small
+            className="leading-3 text-gray-600"
+            style={{ fontSize: "10px" }}
+          >
+            Total Qty: {get(stock, "quantity", "")}
+          </small>
+        </div>
+      </div>
+      <div className="leading-3 flex items-center justify-center pt-2 font-bold text-lg">
+        <h1>Order ID : #{id}</h1>
+      </div>
+
+      <div className="flex items-center justify-between py-2">
+        <div className="text-left">
+          <small className="text-gray-500">ORDER STATUS</small>
+          <h3
+            className={`flex items-center leading-3 font-medium ${statusTextColor}`}
+          >
+            <OrderStatusIcon className={`w-4 h-4 ${statusTextColor}`} />
+            {status}
+            <Modal
+              heading="Update Order Status"
+              trigger={
+                <small className="text-xs font-thin text-blue-500 cursor-pointer">
+                  edit
+                </small>
+              }
+            >
+              <UpdateOrderStatus type="ORDER_STATUS" data={data} />
+            </Modal>
+          </h3>
+        </div>
+        <div className="text-right">
+          <small className="text-gray-500">PAYMENT STATUS</small>
+          <h3
+            className={`flex items-center justify-end leading-3 font-medium ${paymentStatusTextColor}`}
+          >
+            <Modal
+              heading="Update Payment Status"
+              trigger={
+                <small className="text-xs font-thin text-blue-500 cursor-pointer">
+                  edit
+                </small>
+              }
+            >
+              <UpdateOrderStatus type="PAYMENT_STATUS" data={data} />
+            </Modal>
+            <PaymentStatusIcon
+              className={`w-4 h-4 ${paymentStatusTextColor}`}
+            />
+            {payment}
+          </h3>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between py-2">
+        <div className="text-left">
+          <small className="text-gray-500">PRICE PER PIECE</small>
+          <h3 className="leading-3 font-medium text-sm">Rs.{price}</h3>
+        </div>
+        <div className="text-right">
+          <small className="text-gray-500">ORDER QUANTITY</small>
+          <h3 className="leading-3 font-medium text-sm">{quantity} pieces</h3>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between py-2">
+        <div className="text-left">
+          <small className="text-gray-500">ORDER TIME</small>
+          <h3 className="leading-3 font-medium text-sm">{getDateTime(time)}</h3>
+        </div>
+        <div className="text-right">
+          <small className="text-gray-500">TOTAL AMOUNT</small>
+          <h3 className="leading-3 font-medium text-sm">
+            Rs.{price * quantity}
+          </h3>
+        </div>
+      </div>
+
+      <div className="border-t pt-1">
+        <h5 className="text-xs flex items-center">
+          <LocationMarkerIcon className="h-3 w-3" />
+          &nbsp;&nbsp;
+          {get(retailer, "address", "")}
+        </h5>
+      </div>
+    </div>
+  );
+};
+
+const OrderStatusFilter = ({ allStatus, orderStatus, onChange }) => {
+  const isActive = (sts) => orderStatus === sts;
+
+  return (
+    <div className="sticky top-0 flex pt-14 pb-2 overflow-x-auto bg-white no-scrollbar">
+      {values(allStatus).map((sts) => (
+        <div
+          key={sts}
+          className={`py-1 px-2 border rounded mx-0.5 cursor-pointer text-xs ${
+            isActive(sts)
+              ? "bg-app-primary text-white disable"
+              : "hover:bg-blue-50"
+          }`}
+          onClick={() => onChange(sts)}
+        >
+          {toHumanize(sts)}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const Orders = () => {
+  const [orderStatus, setOrderStatus] = useState(ORDER_STATUS.ALL);
+  const [paymentStatus, setPaymentStatus] = useState(ORDER_STATUS.ALL);
+  const { data: orderData, isLoading } = useOrders(ORDER_STATUS.ALL);
+  const { data: retailerData } = useRetailers();
+  const { data: stocksData } = useStocks();
+  const mappedOrderData = useMemo(
+    () =>
+      getMappedOrdersData(
+        orderData,
+        retailerData,
+        stocksData,
+        orderStatus,
+        paymentStatus
+      ),
+    [orderData, retailerData, stocksData, orderStatus, paymentStatus]
+  );
+  return (
+    <div className="w-full">
+      <Header title="Orders" />
+      <div className="flex items-center">
+        <OrderStatusFilter
+          allStatus={ORDER_STATUS}
+          orderStatus={orderStatus}
+          onChange={(sts) => setOrderStatus(sts)}
+        />
+        <div className="w-2" />
+        <OrderStatusFilter
+          allStatus={[
+            ORDER_STATUS.ALL,
+            ORDER_PAYMENT_STATUS.DUE,
+            ORDER_PAYMENT_STATUS.PAID,
+          ]}
+          orderStatus={paymentStatus}
+          onChange={(sts) => setPaymentStatus(sts)}
+        />
+      </div>
+      {isLoading ? (
+        <div className="w-full h-screen">
+          <Spinner />
+        </div>
+      ) : (
+        <div className="pt-2 pb-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto">
+          {React.Children.toArray(
+            map(mappedOrderData, (item) => <OrderCard data={item} />)
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Orders;

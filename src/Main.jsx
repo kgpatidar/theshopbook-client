@@ -4,10 +4,11 @@ import WholesalerLayout from "./Pages/Wholesaler";
 import RetailerLayout from "./Pages/Retailer";
 import { useUser } from "./Hooks/Auth";
 import { isWholesaler } from "./Helpers/account";
+import NotificationPermission from "./Components/Util/NotificationPermission";
 
 const getRedirectingURL = (pathname, isWholesaler) => {
   if (isWholesaler) {
-    if (pathname.includes("wholesaler")) return pathname;
+    if (pathname.includes("wholeseler")) return pathname;
     return "/app/wholesaler/home";
   } else {
     if (pathname.includes("retailer")) return pathname;
@@ -21,6 +22,8 @@ const Main = () => {
 
   if (!isLoggedIn) {
     return <Redirect to="/login" />;
+  } else if (Notification.permission !== "granted") {
+    return <NotificationPermission />;
   }
 
   return (

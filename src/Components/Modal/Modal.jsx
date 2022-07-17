@@ -21,7 +21,7 @@ const Modal = ({
                 className="cursor-pointer w-6 h-6 hover:text-app-primary cusor-primary"
               />
             </div>
-            <div className="p-3">{children}</div>
+            <div className="p-3">{React.cloneElement(children, { close })}</div>
           </div>
         </div>
       )}

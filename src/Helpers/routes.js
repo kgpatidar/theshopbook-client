@@ -2,6 +2,7 @@ import {
   BellIcon,
   DatabaseIcon,
   HomeIcon,
+  ShoppingCartIcon,
   UserCircleIcon,
   UserGroupIcon,
   ViewGridAddIcon,
@@ -26,9 +27,9 @@ const getWholesalerPhoneRoutes = () => {
       path: "retailers",
     },
     {
-      name: "Alerts",
-      Icon: BellIcon,
-      path: "notification",
+      name: "Orders",
+      Icon: ShoppingCartIcon,
+      path: "orders",
     },
     {
       name: "More",
@@ -57,9 +58,9 @@ const getWholesalerDesktopRoutes = () => {
       path: "retailers",
     },
     {
-      name: "Alerts",
-      Icon: BellIcon,
-      path: "notification",
+      name: "Orders",
+      Icon: ShoppingCartIcon,
+      path: "orders",
     },
     {
       name: "Profile",
