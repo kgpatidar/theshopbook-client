@@ -1,6 +1,6 @@
 import {
-  BellIcon,
   DatabaseIcon,
+  DocumentReportIcon,
   HomeIcon,
   ShoppingCartIcon,
   UserCircleIcon,
@@ -61,6 +61,11 @@ const getWholesalerDesktopRoutes = () => {
       name: "Orders",
       Icon: ShoppingCartIcon,
       path: "orders",
+    },
+    {
+      name: "Report",
+      Icon: DocumentReportIcon,
+      path: "reports",
     },
     {
       name: "Profile",

@@ -1,6 +1,12 @@
-import { MailIcon, PhoneIcon, UserIcon } from "@heroicons/react/solid";
+import {
+  DocumentReportIcon,
+  MailIcon,
+  PhoneIcon,
+  UserIcon,
+} from "@heroicons/react/solid";
 import { get } from "lodash";
 import React from "react";
+import { Link } from "react-router-dom";
 import { useAuth, useUser } from "../../../Hooks/Auth";
 
 const PhoneMore = () => {
@@ -45,18 +51,24 @@ const PhoneMore = () => {
 
       {/* EXTRA BUTTON */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-5">
-        <div className="flex items-center justify-center rounded-xl border-2 border-lime-300 h-28 w-full mr-8 bg-lime-100">
+        <Link
+          to={"/app/wholesaler/reports"}
+          className="flex items-center justify-center rounded-xl border-2 border-lime-300 h-28 w-full mr-8 bg-lime-100"
+        >
           <div className="flex flex-col items-center text-center text-lime-900">
-            <span className="text-5xl font-bold">#</span>
-            <span className="font-medium">Button One</span>
+            <DocumentReportIcon className="w-8 h-8" />
+            <button className="font-medium">Report</button>
           </div>
-        </div>
-        <div className="flex items-center justify-center rounded-xl border-2 border-fuchsia-300 h-28 w-full mr-8 bg-fuchsia-100">
-          <div className="flex flex-col text-center text-fuchsia-900">
-            <span className="text-5xl font-bold">#</span>
-            <span className="font-medium">Button Two</span>
+        </Link>
+        <Link
+          to={"/app/wholesaler/reports"}
+          className="flex items-center justify-center rounded-xl border-2 border-orange-300 h-28 w-full mr-8 bg-orange-100"
+        >
+          <div className="flex flex-col items-center text-center text-orange-900">
+            <DocumentReportIcon className="w-8 h-8" />
+            <button className="font-medium">Report</button>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* LOGOUT BTN */}

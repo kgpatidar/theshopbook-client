@@ -1,5 +1,15 @@
 import { LocationMarkerIcon } from "@heroicons/react/solid";
-import { get, keys, map, replace, values } from "lodash";
+import {
+  filter,
+  get,
+  includes,
+  isEmpty,
+  keys,
+  map,
+  replace,
+  toLower,
+  values,
+} from "lodash";
 import React from "react";
 import { useState } from "react";
 import { useMemo } from "react";
@@ -7,6 +17,7 @@ import toast from "react-hot-toast";
 import Header from "../../../Components/Layout/Header";
 import ConfirmationTooltip from "../../../Components/Modal/ConfirmPop";
 import Modal from "../../../Components/Modal/Modal";
+import NoData from "../../../Components/NoData";
 import Spinner from "../../../Components/Spinner";
 import { toHumanize } from "../../../Helpers/global";
 import { refechQuery } from "../../../Helpers/queryClient";
@@ -215,7 +226,7 @@ const OrderCard = ({ data }) => {
   const paymentStatusTextColor = `text-${PAYMENT_STATUS_COLOR[payment]}-600`;
 
   return (
-    <div className="p-4 border border-gray-100 rounded-lg bg-white shadow-lg hover:shadow-xl hover:bg-gray-50">
+    <div className="p-4 border border-gray-200 rounded-lg bg-white shadow-lg hover:shadow-xl hover:bg-gray-50">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="text-left">
@@ -349,6 +360,8 @@ const OrderStatusFilter = ({ allStatus, orderStatus, onChange }) => {
 const Orders = () => {
   const [orderStatus, setOrderStatus] = useState(ORDER_STATUS.ALL);
   const [paymentStatus, setPaymentStatus] = useState(ORDER_STATUS.ALL);
+  const [searchText, setSearchText] = useState("");
+
   const { data: orderData, isLoading } = useOrders(ORDER_STATUS.ALL);
   const { data: retailerData } = useRetailers();
   const { data: stocksData } = useStocks();
@@ -363,34 +376,62 @@ const Orders = () => {
       ),
     [orderData, retailerData, stocksData, orderStatus, paymentStatus]
   );
+
+  const filtredOrders = filter(
+    mappedOrderData,
+    ({
+      id,
+      retailer: { name: retailerName = "" },
+      stock: { name: stockName = "" },
+    }) => {
+      const text = toLower(searchText);
+      return (
+        includes(id.toString(), text) ||
+        includes(toLower(retailerName), text) ||
+        includes(toLower(stockName), text)
+      );
+    }
+  );
+
   return (
     <div className="w-full">
-      <Header title="Orders" />
-      <div className="flex items-center">
-        <OrderStatusFilter
-          allStatus={ORDER_STATUS}
-          orderStatus={orderStatus}
-          onChange={(sts) => setOrderStatus(sts)}
-        />
-        <div className="w-2" />
-        <OrderStatusFilter
-          allStatus={[
-            ORDER_STATUS.ALL,
-            ORDER_PAYMENT_STATUS.DUE,
-            ORDER_PAYMENT_STATUS.PAID,
-          ]}
-          orderStatus={paymentStatus}
-          onChange={(sts) => setPaymentStatus(sts)}
-        />
-      </div>
+      <Header
+        searchText={searchText}
+        setSearchText={setSearchText}
+        placeholderText="Search id, stock name or retailer name"
+        title="Orders"
+      />
+      {!isEmpty(filtredOrders) && (
+        <div className="flex items-center">
+          <OrderStatusFilter
+            allStatus={ORDER_STATUS}
+            orderStatus={orderStatus}
+            onChange={(sts) => setOrderStatus(sts)}
+          />
+          <div className="w-2" />
+          <OrderStatusFilter
+            allStatus={[
+              ORDER_STATUS.ALL,
+              ORDER_PAYMENT_STATUS.DUE,
+              ORDER_PAYMENT_STATUS.PAID,
+            ]}
+            orderStatus={paymentStatus}
+            onChange={(sts) => setPaymentStatus(sts)}
+          />
+        </div>
+      )}
       {isLoading ? (
         <div className="w-full h-screen">
           <Spinner />
         </div>
+      ) : isEmpty(filtredOrders) ? (
+        <div className="w-full h-screen">
+          <NoData />
+        </div>
       ) : (
         <div className="pt-2 pb-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto">
           {React.Children.toArray(
-            map(mappedOrderData, (item) => <OrderCard data={item} />)
+            map(filtredOrders, (item) => <OrderCard data={item} />)
           )}
         </div>
       )}

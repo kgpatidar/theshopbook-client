@@ -5,7 +5,7 @@ import {
   PlusCircleIcon,
   TrashIcon,
 } from "@heroicons/react/solid";
-import { get, map } from "lodash";
+import { filter, get, includes, isEmpty, map, toLower } from "lodash";
 import React from "react";
 import { useState } from "react";
 import Input from "../../../Components/Form/Input";
@@ -17,6 +17,8 @@ import Modal from "../../../Components/Modal/Modal";
 import toast from "react-hot-toast";
 import { refechQuery } from "../../../Helpers/queryClient";
 import { useEffect } from "react";
+import NoData from "../../../Components/NoData";
+import HeaderButton from "../../../Components/Layout/HeaderButton";
 
 const ACTION_TYPE = {
   ADD: "ADD",
@@ -121,23 +123,20 @@ const AddStocks = ({ close, type = ACTION_TYPE.ADD, stockData = {} }) => {
 
 const Stocks = () => {
   const { data: stocks, isLoading } = useStocks();
+  const [searchText, setSearchText] = useState("");
+
+  const filtredStocks = filter(stocks, ({ name }) =>
+    includes(toLower(name), toLower(searchText))
+  );
 
   return (
     <div className="w-full">
       <Header
         title="Stocks"
+        searchText={searchText}
+        setSearchText={setSearchText}
         rightChild={
-          <Modal
-            heading="Add Stocks"
-            trigger={
-              <div className="flex items-center">
-                <button className={className.activeBtn + "flex items-center"}>
-                  <PlusCircleIcon className="text-white w-5 h-5 mr-3" />
-                  <span>Add New</span>
-                </button>
-              </div>
-            }
-          >
+          <Modal heading="Add Stocks" trigger={HeaderButton}>
             <AddStocks type={ACTION_TYPE.ADD} />
           </Modal>
         }
@@ -147,10 +146,14 @@ const Stocks = () => {
         <div className="w-full h-screen">
           <Spinner />
         </div>
+      ) : isEmpty(filtredStocks) ? (
+        <div className="w-full h-screen">
+          <NoData />
+        </div>
       ) : (
         <div className="pt-12 pb-16 grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-y-auto">
           {React.Children.toArray(
-            map(stocks, (item, index) => {
+            map(filtredStocks, (item, index) => {
               return (
                 <div
                   key={item.id}
