@@ -66,12 +66,11 @@ export const getColumns = (all = true) => {
         isPhone ? "Amt Due" : "Amount Due",
       ]
     : [
-        isPhone ? "O.ID" : "Order ID",
+        isPhone ? "ID" : "Order ID",
         "Name",
-        "Quantity",
-        "Price",
-        isPhone ? "O.Status" : "Order Status",
-        isPhone ? "Payment" : "Payment Status",
         "Time",
+        isPhone ? "Qty" : "Quantity",
+        "Price",
+        isPhone ? "Amt" : "Amount",
       ];
 };

@@ -8,7 +8,7 @@ import NotificationPermission from "./Components/Util/NotificationPermission";
 
 const getRedirectingURL = (pathname, isWholesaler) => {
   if (isWholesaler) {
-    if (pathname.includes("wholeseler")) return pathname;
+    if (pathname.includes("wholesaler")) return pathname;
     return "/app/wholesaler/home";
   } else {
     if (pathname.includes("retailer")) return pathname;
@@ -32,13 +32,13 @@ const Main = () => {
         <Route
           path="/app/wholesaler"
           render={(props) => {
-            return <WholesalerLayout />;
+            return <WholesalerLayout user={data} />;
           }}
         />
         <Route
           path="/app/retailer"
           render={(props) => {
-            return <RetailerLayout />;
+            return <RetailerLayout user={data} />;
           }}
         />
       </Switch>

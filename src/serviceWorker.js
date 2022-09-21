@@ -3,6 +3,8 @@
  * Do not touch this file.
  */
 
+import { notificationSubscriptionApi } from "./Apis/Auth";
+
 function urlBase64ToUint8Array(base64String) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -22,17 +24,7 @@ function getDetermineServerKey() {
   return urlBase64ToUint8Array(publicKey);
 }
 
-function subscribeUser(subscribe, userInfo) {
-  return fetch(`https://test-push-notification-1.herokuapp.com/subscribe`, {
-    method: "POST",
-    body: JSON.stringify(subscribe),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-}
-
-export default async function registerServiceWorkerAndSubscribe(userInfo) {
+export default async function registerServiceWorkerAndSubscribe() {
   navigator.serviceWorker.ready.then(function (response) {
     return response.pushManager.getSubscription().then((subscription) => {
       return response.pushManager
@@ -41,7 +33,11 @@ export default async function registerServiceWorkerAndSubscribe(userInfo) {
           applicationServerKey: getDetermineServerKey(),
         })
         .then((newSubscribe) => {
-          subscribeUser(newSubscribe, userInfo);
+          try {
+            notificationSubscriptionApi(newSubscribe).then(() =>
+              window.location.reload()
+            );
+          } catch (error) {}
         });
     });
   });
@@ -53,8 +49,6 @@ export async function registerServieWorker() {
       `http://localhost:3000/sw.js`
     );
   } else {
-    return await navigator.serviceWorker.register(
-      "https://testing-app-1.netlify.app/sw.js"
-    );
+    return await navigator.serviceWorker.register("");
   }
 }

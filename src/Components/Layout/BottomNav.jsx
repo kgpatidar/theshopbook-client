@@ -1,10 +1,15 @@
 import { map } from "lodash";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { isWholesaler } from "../../Helpers/account";
 
-const BottomNav = ({ routes }) => {
+const BottomNav = ({ routes, user }) => {
   const { pathname } = useLocation();
   const checkIsActive = (path) => pathname.includes(path);
+  const redirectTo = (path) => {
+    if (!isWholesaler(user)) return `/app/retailer/${path}`;
+    return `/app/wholesaler/${path}`;
+  };
   return (
     <nav
       style={{ height: "50px" }}
@@ -16,7 +21,7 @@ const BottomNav = ({ routes }) => {
           return (
             <div className="transition-all duration-300 hover:bg-blue-50 w-full py-3">
               <Link
-                to={`/app/wholesaler/${path}`}
+                to={redirectTo(path)}
                 className="transition-all flex flex-col items-center"
               >
                 <Icon

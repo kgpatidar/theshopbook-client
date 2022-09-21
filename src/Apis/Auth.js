@@ -26,3 +26,7 @@ export const getUserFromLS = async () => {
 export const sendVerificationMailApi = async (data) => {
   return await Api.post("user/send/verify", data);
 };
+
+export const notificationSubscriptionApi = async (data) => {
+  return await Api.post("notification/subscribe", data);
+};

@@ -195,7 +195,7 @@ const UpdateOrderStatus = ({ data, type, close }) => {
                   )} to ${sts}.`}
                   onYes={() => changeStatus(sts)}
                 >
-                  <div className="p-1 cursor-pointer p-0.5 hover:bg-gray-100 scale-75">
+                  <div className="p-1 cursor-pointer p-0.5 hover:bg-gray-200 scale-75">
                     <OrderStatusView type={type} status={sts} />
                   </div>
                 </ConfirmationTooltip>
@@ -265,16 +265,18 @@ const OrderCard = ({ data }) => {
           >
             <OrderStatusIcon className={`w-4 h-4 ${statusTextColor}`} />
             {status}
-            <Modal
-              heading="Update Order Status"
-              trigger={
-                <small className="text-xs font-thin text-blue-500 cursor-pointer">
-                  edit
-                </small>
-              }
-            >
-              <UpdateOrderStatus type="ORDER_STATUS" data={data} />
-            </Modal>
+            {status !== ORDER_STATUS.CANCELED && (
+              <Modal
+                heading="Update Order Status"
+                trigger={
+                  <small className="text-xs font-thin text-blue-500 cursor-pointer">
+                    edit
+                  </small>
+                }
+              >
+                <UpdateOrderStatus type="ORDER_STATUS" data={data} />
+              </Modal>
+            )}
           </h3>
         </div>
         <div className="text-right">
@@ -282,16 +284,18 @@ const OrderCard = ({ data }) => {
           <h3
             className={`flex items-center justify-end leading-3 font-medium ${paymentStatusTextColor}`}
           >
-            <Modal
-              heading="Update Payment Status"
-              trigger={
-                <small className="text-xs font-thin text-blue-500 cursor-pointer">
-                  edit
-                </small>
-              }
-            >
-              <UpdateOrderStatus type="PAYMENT_STATUS" data={data} />
-            </Modal>
+            {status !== ORDER_STATUS.CANCELED && (
+              <Modal
+                heading="Update Payment Status"
+                trigger={
+                  <small className="text-xs font-thin text-blue-500 cursor-pointer">
+                    edit
+                  </small>
+                }
+              >
+                <UpdateOrderStatus type="PAYMENT_STATUS" data={data} />
+              </Modal>
+            )}
             <PaymentStatusIcon
               className={`w-4 h-4 ${paymentStatusTextColor}`}
             />
@@ -401,31 +405,29 @@ const Orders = () => {
         placeholderText="Search id, stock name or retailer name"
         title="Orders"
       />
-      {!isEmpty(filtredOrders) && (
-        <div className="flex items-center">
-          <OrderStatusFilter
-            allStatus={ORDER_STATUS}
-            orderStatus={orderStatus}
-            onChange={(sts) => setOrderStatus(sts)}
-          />
-          <div className="w-2" />
-          <OrderStatusFilter
-            allStatus={[
-              ORDER_STATUS.ALL,
-              ORDER_PAYMENT_STATUS.DUE,
-              ORDER_PAYMENT_STATUS.PAID,
-            ]}
-            orderStatus={paymentStatus}
-            onChange={(sts) => setPaymentStatus(sts)}
-          />
-        </div>
-      )}
+      <div className="flex items-center">
+        <OrderStatusFilter
+          allStatus={ORDER_STATUS}
+          orderStatus={orderStatus}
+          onChange={(sts) => setOrderStatus(sts)}
+        />
+        <div className="w-2" />
+        <OrderStatusFilter
+          allStatus={[
+            ORDER_STATUS.ALL,
+            ORDER_PAYMENT_STATUS.DUE,
+            ORDER_PAYMENT_STATUS.PAID,
+          ]}
+          orderStatus={paymentStatus}
+          onChange={(sts) => setPaymentStatus(sts)}
+        />
+      </div>
       {isLoading ? (
-        <div className="w-full h-screen">
+        <div className="w-full h-full">
           <Spinner />
         </div>
       ) : isEmpty(filtredOrders) ? (
-        <div className="w-full h-screen">
+        <div className="w-full h-full">
           <NoData />
         </div>
       ) : (

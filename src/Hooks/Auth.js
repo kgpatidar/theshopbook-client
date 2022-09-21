@@ -8,6 +8,7 @@ import {
   sendVerificationMailApi,
   setUserInLS,
 } from "../Apis/Auth";
+import { getWholesalerId } from "../Helpers/account";
 import { refechQuery } from "../Helpers/queryClient";
 
 export const useAuth = () => {
@@ -51,6 +52,5 @@ export const useUser = () => {
 
 export const useWholesellerId = () => {
   const { data } = useUser();
-  const wholesellerId = get(data, "wholesellerId", null);
-  return wholesellerId ? wholesellerId : get(data, "id", null);
+  return getWholesalerId(data);
 };

@@ -4,10 +4,13 @@ import {
   approveOrderStatusApi,
   cancelOrderStatusApi,
   fetchOrdersApi,
+  getRetailerOrderApi,
+  placeOrderApi,
   updateOrderStatusApi,
   updatePaymentStatusApi,
 } from "../Apis/Orders";
-import { useWholesellerId } from "./Auth";
+import { getRetailerId, getWholesalerId } from "../Helpers/account";
+import { useUser, useWholesellerId } from "./Auth";
 
 export const useOrders = (type) => {
   const wholesellerId = useWholesellerId();
@@ -16,6 +19,16 @@ export const useOrders = (type) => {
     () => fetchOrdersApi(wholesellerId, type)
   );
 
+  return { data: get(data, "data.data", []), isLoading };
+};
+
+export const useRetailerOrder = (userData = {}) => {
+  const wholesellerId = getWholesalerId(userData);
+  const retailerId = getRetailerId(userData);
+  const { data, isLoading } = useQuery(
+    ["fetchRetailerOrders", wholesellerId, retailerId],
+    () => getRetailerOrderApi(wholesellerId, retailerId)
+  );
   return { data: get(data, "data.data", []), isLoading };
 };
 
@@ -44,3 +57,5 @@ export const useOrdersActions = () => {
     isUpdatingPS,
   };
 };
+
+export const usePlaceOrder = () => useMutation(placeOrderApi);

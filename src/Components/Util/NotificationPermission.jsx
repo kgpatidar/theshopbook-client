@@ -1,5 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { notificationSubscriptionApi } from "../../Apis/Auth";
+import registerServiceWorkerAndSubscribe from "../../serviceWorker";
 import { Brand } from "../Brand";
 
 const NotificationPermission = () => {
@@ -7,7 +9,7 @@ const NotificationPermission = () => {
   const getNotificationPermission = () => {
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
-        history.replace("/app");
+        registerServiceWorkerAndSubscribe();
       }
     });
   };

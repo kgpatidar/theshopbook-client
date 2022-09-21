@@ -22,7 +22,7 @@ const screenRoutes = [
   { path: "/app/wholesaler/more", main: PhoneMore },
 ];
 
-const WholesalerLayout = () => {
+const WholesalerLayout = ({ user }) => {
   const isPhone = window.innerWidth <= 768;
   const routes = useMemo(() => getWholesalerRoutes(isPhone), [isPhone]);
 
@@ -37,11 +37,11 @@ const WholesalerLayout = () => {
           )}
         </Switch>
       </div>
-      <BottomNav routes={routes} />
+      <BottomNav routes={routes} user={user} />
     </div>
   ) : (
     <div className="w-0 h-0 hidden md:w-screen md:h-screen md:flex bg-white">
-      <Sidebar routes={routes} />
+      <Sidebar routes={routes} user={user} />
       <div className="w-full flex flex-col overflow-x-hidden overflow-y-hidden">
         <section className="px-4 w-full overflow-y-auto">
           <Switch>

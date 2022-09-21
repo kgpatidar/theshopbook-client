@@ -78,3 +78,45 @@ const getWholesalerDesktopRoutes = () => {
 export const getWholesalerRoutes = (isPhone) => {
   return isPhone ? getWholesalerPhoneRoutes() : getWholesalerDesktopRoutes();
 };
+
+const getRetailerDesktopRoutes = () => {
+  return [
+    {
+      name: "Home",
+      Icon: HomeIcon,
+      path: "home",
+    },
+    {
+      name: "My Orders",
+      Icon: ShoppingCartIcon,
+      path: "my-orders",
+    },
+    {
+      name: "Report",
+      Icon: DocumentReportIcon,
+      path: "my-report",
+    },
+  ];
+};
+const getRetailerPhoneRoutes = () => {
+  return [
+    {
+      name: "Home",
+      Icon: HomeIcon,
+      path: "home",
+    },
+    {
+      name: "My Orders",
+      Icon: ShoppingCartIcon,
+      path: "my-orders",
+    },
+    {
+      name: "Report",
+      Icon: DocumentReportIcon,
+      path: "my-report",
+    },
+  ];
+};
+export const getRetailerRoutes = (isPhone) => {
+  return isPhone ? getRetailerPhoneRoutes() : getRetailerDesktopRoutes();
+};

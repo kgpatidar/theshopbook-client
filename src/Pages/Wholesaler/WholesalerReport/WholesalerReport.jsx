@@ -1,4 +1,4 @@
-import { ArrowNarrowRightIcon } from "@heroicons/react/outline";
+import { ArrowLeftIcon, ArrowNarrowRightIcon } from "@heroicons/react/outline";
 import { find, get, map, toUpper } from "lodash";
 import moment from "moment";
 import React from "react";
@@ -12,7 +12,7 @@ import { useOrders } from "../../../Hooks/Orders";
 import { useWholesalerReport } from "../../../Hooks/Reports";
 import { useRetailers } from "../../../Hooks/Retailers";
 import { useStocks } from "../../../Hooks/Stocks";
-import { ORDER_STATUS } from "../Orders/orders.helper";
+import { ORDER_STATUS, ORDER_PAYMENT_STATUS } from "../Orders/orders.helper";
 import { getColumns, getMappedReportData } from "./wholesalerReport.helper";
 const DATE_FORMATE = "YYYY-MM-DD";
 
@@ -81,23 +81,50 @@ const WholesalerReport = () => {
 
   const columns = useMemo(() => getColumns(!id), [id]);
 
+  const singleRetailerData = find(
+    mappedReportData,
+    ({ retailerId }) => retailerId == id
+  );
   const tableData = id
-    ? get(find(mappedReportData, { retailerId: id }), "orders", [])
+    ? get(singleRetailerData, "orders", [])
     : mappedReportData;
 
   return (
     <div className="w-full">
-      <Header title="Amount Report" hideSearchBar />
+      <Header
+        title={
+          singleRetailerData ? (
+            <span className="overflow-hidden whitespace-nowrap">
+              <small>Report : </small>
+              {get(singleRetailerData, "retailerName", "")}
+            </span>
+          ) : (
+            "Report"
+          )
+        }
+        hideSearchBar
+      />
       <RangePicker dateRange={dateRange} setDateRange={setDateRange} />
-      <br />
-      {id && <Link to={"/app/wholesaler/reports"}>{`< Back`}</Link>}
+      {id && (
+        <Link
+          to={"/app/wholesaler/reports"}
+          className="text-blue-600 flex items-center py-2"
+        >
+          <ArrowLeftIcon className="w-4 h-4" />
+          &nbsp;Back
+        </Link>
+      )}
       {loadingStockData || loadingReportData || loadingRetailerData ? (
         <div className="h-full w-full">
           <Spinner />
         </div>
       ) : (
         <table className="table-auto w-full overflow-x-auto">
-          <thead className="text-left border-b border-black">
+          <thead
+            className={`text-left border-b border-black ${
+              isPhone ? "text-xs" : ""
+            }`}
+          >
             <tr>
               {React.Children.toArray(map(columns, (col) => <th>{col}</th>))}
             </tr>
@@ -106,14 +133,21 @@ const WholesalerReport = () => {
             {React.Children.toArray(
               map(tableData, (item) =>
                 id ? (
-                  <tr className="border-b cursor-pointer text-xs md:text-sm lg:text-base">
+                  <tr className="border-b cursor-pointer text-xs md:text-sm lg:text-base h-9">
                     <td>{item.orderId}</td>
                     <td>{item.name}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.price}</td>
-                    <td>{item.status}</td>
-                    <td>{item.payment}</td>
-                    <td>{item.time}</td>
+                    <td>{moment(item.time).format("DD/MM/YY hh:mm A")}</td>
+                    <td>{item.quantity}pcs</td>
+                    <td>Rs.{item.price * item.quantity}</td>
+                    <td
+                      className={`${
+                        item.payment === ORDER_PAYMENT_STATUS.DUE
+                          ? "text-yellow-500"
+                          : "text-green-500"
+                      }`}
+                    >
+                      {item.payment}
+                    </td>
                   </tr>
                 ) : (
                   <tr

@@ -1,11 +1,12 @@
 import { get } from "lodash";
 import { useMutation, useQuery } from "react-query";
 import { addNewStockApi, editStockApi, getStocksApi } from "../Apis/Stocks";
+import { getWholesalerId } from "../Helpers/account";
 import { useUser } from "./Auth";
 
 export const useStocks = () => {
   const { data: userData } = useUser();
-  const wholesellerId = get(userData, "id", null);
+  const wholesellerId = getWholesalerId(userData);
   const { data, isLoading } = useQuery(["fetchStocks", wholesellerId], () =>
     getStocksApi(wholesellerId)
   );
