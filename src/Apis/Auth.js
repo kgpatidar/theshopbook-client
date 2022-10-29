@@ -9,7 +9,8 @@ export const loginUserApi = async (data) => {
   return await Api.post("user/login", data);
 };
 
-export const logoutUserApi = (data) => {
+export const logoutUserApi = async (data) => {
+  await notificationUnSubscriptionApi();
   return localStorage.removeItem(LOCAL_STORAGE_KEY);
 };
 
@@ -29,4 +30,8 @@ export const sendVerificationMailApi = async (data) => {
 
 export const notificationSubscriptionApi = async (data) => {
   return await Api.post("notification/subscribe", data);
+};
+
+export const notificationUnSubscriptionApi = async (data) => {
+  return await Api.get("notification/unsubscribe");
 };

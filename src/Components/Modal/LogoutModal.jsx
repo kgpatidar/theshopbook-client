@@ -7,7 +7,7 @@ import Modal from "./Modal";
 const LogoutModal = () => {
   const { logoutUser } = useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logoutUser();
   };
 

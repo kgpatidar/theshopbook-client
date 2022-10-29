@@ -115,6 +115,11 @@ const getRetailerPhoneRoutes = () => {
       Icon: DocumentReportIcon,
       path: "my-report",
     },
+    {
+      name: "More",
+      Icon: ViewGridAddIcon,
+      path: "more",
+    },
   ];
 };
 export const getRetailerRoutes = (isPhone) => {

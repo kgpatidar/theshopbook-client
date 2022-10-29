@@ -7,6 +7,7 @@ import Home from "./Home/Home";
 import { getRetailerRoutes } from "../../Helpers/routes";
 import MyOrders from "./MyOrders/MyOrders";
 import RetailerReport from "./RetailerReport/RetailerReport";
+import PhoneMore from "./More/PhoneMore";
 
 /**Pages */
 
@@ -14,6 +15,7 @@ const screenRoutes = [
   { path: "/app/retailer/home", main: Home },
   { path: "/app/retailer/my-orders", main: MyOrders },
   { path: "/app/retailer/my-report", main: RetailerReport },
+  { path: "/app/retailer/more", main: PhoneMore },
 ];
 
 const RetailerLayout = ({ user }) => {
